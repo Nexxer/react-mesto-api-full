@@ -1,4 +1,4 @@
-const { JWT_SECRET } = process.env;
+const { JWT_SECRET = 'secret' } = process.env;
 const jwt = require('jsonwebtoken');
 const FailPassOrLogin = require('./errors/failPassOrLogin');
 

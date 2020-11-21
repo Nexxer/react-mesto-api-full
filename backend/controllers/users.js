@@ -5,7 +5,7 @@ const NotFoundError = require('../middlewares/errors/notFoundError');
 const NotValidInfo = require('../middlewares/errors/notValidInfo');
 const FailPassOrLogin = require('../middlewares/errors/failPassOrLogin');
 
-const { JWT_SECRET } = process.env;
+const { JWT_SECRET = 'secret' } = process.env;
 
 const getUser = (req, res, next) => {
   User.findById(req.user)
