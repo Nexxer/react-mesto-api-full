@@ -89,5 +89,9 @@ class Api {
 
 
 export const api = new Api({
-  baseUrl: 'http://api.nexxer.students.nomoreparties.co/',
+  baseUrl: 'http://www.api.nexxer.students.nomoreparties.co',
+  headers: {
+    authorization: `Bearer ${localStorage.getItem('jwt')}`,
+    'Content-Type': 'application/json',
+  }
 });
