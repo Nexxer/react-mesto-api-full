@@ -18,6 +18,8 @@ function Register(props) {
     evt.preventDefault();
     if (!email || !password) {
       console.error("Введите данные");
+      setEmail("");
+      setPassword("");
     }
     props.onRegister(email, password);
     setEmail("");

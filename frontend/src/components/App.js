@@ -159,7 +159,7 @@ function App() {
         if (err === 400) {
           console.log("Не передано одно из полей");
         } else if (err === 401) {
-          console.log("Пользователь с email не найден");
+          console.log("Пользователь не зарегестрирован");
         } else {
           console.log(`Ошибка: ${err}`);
         }
@@ -214,81 +214,81 @@ function App() {
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <div style={{ backgroundColor: "#000" }}>
-        <div className="page">
+      {/* <div style={{ backgroundColor: "#000" }}> */}
+      <div className="page">
 
-          <Header
-            userMail={userMail}
-            onSignOut={handleLogout}
+        <Header
+          userMail={userMail}
+          onSignOut={handleLogout}
+        />
+
+        <Switch>
+          <ProtectedRoute path={ROUTES_MAP.MAIN} exact
+            component={Main}
+            loggedIn={loggedIn}
+            onEditAvatar={handleEditAvatarClick}
+            onEditProfile={handleEditProfileClick}
+            onAddPlace={handleAddPlaceClick}
+            onCardClick={handleCardClick}
+            cards={cards}
+            onCardLike={handleCardLike}
+            onCardDelete={handleCardDelete}
           />
 
-          <Switch>
-            <ProtectedRoute path={ROUTES_MAP.MAIN} exact
-              component={Main}
-              loggedIn={loggedIn}
-              onEditAvatar={handleEditAvatarClick}
-              onEditProfile={handleEditProfileClick}
-              onAddPlace={handleAddPlaceClick}
-              onCardClick={handleCardClick}
-              cards={cards}
-              onCardLike={handleCardLike}
-              onCardDelete={handleCardDelete}
+          <Route path={ROUTES_MAP.SIGN_UP}>
+            <Register
+              onRegister={handleRegister}
             />
+          </Route>
 
-            <Route path={ROUTES_MAP.SIGN_UP}>
-              <Register
-                onRegister={handleRegister}
-              />
-            </Route>
+          <Route path={ROUTES_MAP.SIGN_IN}>
+            <Login
+              onLogin={handleLogin}
+            />
+          </Route>
 
-            <Route path={ROUTES_MAP.SIGN_IN}>
-              <Login
-                onLogin={handleLogin}
-              />
-            </Route>
+          <Route path="*">
+            <NotFound />
+          </Route>
+        </Switch>
 
-            <Route path="*">
-              <NotFound />
-            </Route>
-          </Switch>
+        <Footer />
 
-          <Footer />
+        <EditAvatarPopup
+          isOpen={isEditAvatarPopupOpen}
+          onClose={closeAllPopups}
+          onUpdateAvatar={handleUpdateAvatar}
+          buttonText='Сохранить'
+        />
 
-          <EditAvatarPopup
-            isOpen={isEditAvatarPopupOpen}
-            onClose={closeAllPopups}
-            onUpdateAvatar={handleUpdateAvatar}
-            buttonText='Сохранить'
-          />
+        <EditProfilePopup
+          isOpen={isEditProfilePopupOpen}
+          onClose={closeAllPopups}
+          onUpdateUser={handleUpdateUser}
+          buttonText='Сохранить'
+        />
 
-          <EditProfilePopup
-            isOpen={isEditProfilePopupOpen}
-            onClose={closeAllPopups}
-            onUpdateUser={handleUpdateUser}
-            buttonText='Сохранить'
-          />
+        <AddPlacePopup
+          isOpen={isAddPlacePopupOpen}
+          onClose={closeAllPopups}
+          onAddPlace={handleAddPlaceSubmit}
+          buttonText='Создать'
+        />
 
-          <AddPlacePopup
-            isOpen={isAddPlacePopupOpen}
-            onClose={closeAllPopups}
-            onAddPlace={handleAddPlaceSubmit}
-            buttonText='Создать'
-          />
+        <ImagePopup
+          card={selectedCard}
+          isOpen={isCardPopupOpen}
+          onClose={closeAllPopups}
+        />
 
-          <ImagePopup
-            card={selectedCard}
-            isOpen={isCardPopupOpen}
-            onClose={closeAllPopups}
-          />
+        <InfoTooltip
+          isOpen={isRegisterPopupOpen}
+          onClose={closeAllPopups}
+          status={statusReg}
+        />
 
-          <InfoTooltip
-            isOpen={isRegisterPopupOpen}
-            onClose={closeAllPopups}
-            status={statusReg}
-          />
-
-        </div>
-      </div >
+      </div>
+      {/* </div > */}
 
     </CurrentUserContext.Provider>
   );
