@@ -1,4 +1,4 @@
-const baseUrl = 'https://auth.nomoreparties.co';
+const baseUrl = 'http://www.api.nekker.students.nomoreparties.co';
 
 export const registration = (email, password) => {
   return fetch(`${baseUrl}/signup`, {
