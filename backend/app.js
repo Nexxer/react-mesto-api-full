@@ -9,8 +9,8 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { PORT = 3000 } = process.env;
 const app = express();
 const allowedCors = [
-  'http://nekker.students.nomoreparties.co',
-  'http://www.nekker.students.nomoreparties.co',
+  'https://nekker.students.nomoreparties.co',
+  'https://www.nekker.students.nomoreparties.co',
 ];
 
 app.use(bodyParser.urlencoded({ extended: true }));
