@@ -9,7 +9,7 @@ export const registration = (email, password) => {
     body: JSON.stringify({ email, password }),
   })
     .then((res) => {
-      if (res.ok) {
+      if (res) {
         return res.json();
       }
       return Promise.reject(res.status)
@@ -25,7 +25,7 @@ export const onLogin = (email, password) => {
     body: JSON.stringify({ email, password }),
   })
     .then((res) => {
-      if (res.ok) {
+      if (res) {
         return res.json();
       }
       return Promise.reject(res.status)
@@ -41,7 +41,7 @@ export const getJWT = (jwt) => {
     },
   })
     .then((res) => {
-      if (res.ok) {
+      if (res) {
         return res.json();
       }
       return Promise.reject(res.status)
