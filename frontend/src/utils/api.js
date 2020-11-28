@@ -104,7 +104,7 @@ class Api {
 
 
 export const api = new Api({
-  baseUrl: 'https://www.api.nekker.students.nomoreparties.xyz',
+  baseUrl: 'http://www.api.nekker.students.nomoreparties.xyz',
   headers: {
     authorization: `Bearer ${localStorage.getItem('jwt')}`,
     'Content-Type': 'application/json',

@@ -82,7 +82,7 @@ const createUser = (req, res, next) => {
 //     .then((user) => res.send({ data: user }))
 //     .catch(next);
 // };
-//! Было
+
 const login = async (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
@@ -99,29 +99,6 @@ const login = async (req, res, next) => {
   // next(err);
   // //res.status(401).send({ message: err.message });
   // });
-
-// const login = async (req, res, next) => {
-//   const { email, password } = req.body;
-//   if (!email || !password || !password.trim()) {
-//     return next(new FailPassOrLogin('Неверные данные'));
-//   }
-//   try {
-//     const user = await User.findOne({ email }).select('+password');
-//     if (!user) {
-//       return next(new FailPassOrLogin('Нет пользователя с таким email'));
-//     }
-//     const matched = await bcrypt.compare(password, user.password);
-//     if (!matched) {
-//       return next(new FailPassOrLogin('Неправильный пароль'));
-//     }
-//     const id = user._id;
-//     const token = jwt.sign({ _id: id }, JWT_SECRET, {
-//       expiresIn: '7d',
-//     });
-//     return res.status(200).send({ token, id });
-//   } catch (err) {
-//     return next(new FailPassOrLogin('Некоректные данные'));
-//   }
 };
 
 module.exports = {
