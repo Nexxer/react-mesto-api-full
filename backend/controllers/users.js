@@ -41,8 +41,8 @@ const getUserId = (req, res, next) => {
       }
       throw new NotFoundError('Пользователь не найден');
     })
-    .catch(next);
-  // .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
+    // .catch(next);
+    .catch(() => res.status(500).send({ message: 'При создании пользователя ошибка' }));
 };
 
 const createUser = (req, res, next) => {
