@@ -1,4 +1,4 @@
-const baseUrl = 'http://www.api.nekker.students.nomoreparties.xyz';
+const baseUrl = 'https://www.api.nekker.students.nomoreparties.xyz';
 // const baseUrl = 'http://localhost:3000';
 
 export const registration = (email, password) => {
