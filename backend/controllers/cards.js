@@ -32,11 +32,11 @@ const createCard = async (req, res, next) => {
 };
 
 const deleteCard = async (req, res, next) => {
-  Card.findByIdAndDelete(req.params.cardId)
+  await Card.findByIdAndDelete(req.params.cardId)
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Такой карточки нет');
-      } else if (card.owner !== req.user._id) {
+      } else if (card.owner.toString() !== req.user._id) {
         throw new NotFoundError('Нельзая удалить чужую карточку');
         // res.status(404).send({ message: 'Нельзая удалить чужую карточку' });
       }
