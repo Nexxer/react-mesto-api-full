@@ -13,8 +13,6 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use(cors());
-
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
   useCreateIndex: true,
@@ -22,6 +20,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useUnifiedTopology: true,
 });
 
+app.use(cors());
 app.use(requestLogger);
 
 //! Не забудьте удалить этот код после ревью
@@ -38,15 +37,14 @@ app.use(errorLogger);
 
 app.use(errors());
 
-app.use((err, req, res, _) => {
+app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
-  res
-    .status(statusCode)
-    .send({
-      message: statusCode === 500
-        ? 'На сервере произошла ошибка'
-        : message,
-    });
+  res.status(statusCode).send({
+    message: statusCode === 500
+      ? 'serverError'
+      : message,
+  });
+  next();
 });
 
 app.listen(PORT);
