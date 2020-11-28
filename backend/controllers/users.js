@@ -7,19 +7,20 @@ const FailPassOrLogin = require('../middlewares/errors/failPassOrLogin');
 
 const { JWT_SECRET = 'secret' } = process.env;
 
-const getUser = (req, res, next) => {
-  User.findById(req.user)
+const getUser = async (req, res, next) => {
+  await User.findById(req.user._id)
     .then((user) => {
       if (!user) {
         throw new NotFoundError('Пользователь не найден');
       }
+      // res.status(200).send(user);
       res.send(user);
     })
     .catch(next);
 };
 
-const getUsers = (req, res, next) => {
-  User.find({})
+const getUsers = async (req, res, next) => {
+  await User.find({})
     .then((user) => {
       if (user) {
         res.status(200).send(user);
@@ -34,7 +35,8 @@ const getUserId = (req, res, next) => {
   User.findById(req.params.id)
     .then((id) => {
       if (id) {
-        res.status(200).send(id);
+        // res.status(200).send(id);
+        res.send(id);
         return;
       }
       throw new NotFoundError('Пользователь не найден');
@@ -55,7 +57,8 @@ const createUser = (req, res, next) => {
       if (!user) {
         throw new NotFoundError('Пользователь не найден');
       }
-      res.status(200).send({ data: user });
+      // res.status(200).send({ data: { id: user._id, email: user.email } });
+      res.send({ data: { id: user._id, email: user.email } });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -69,14 +72,25 @@ const createUser = (req, res, next) => {
     });
 };
 
-const login = (req, res, next) => {
+// const setUserInfo = (req, res, next) => {
+//   const { name, about } = req.body;
+//   User.findByIdAndUpdate(
+//     req.user._id,
+//     { name, about },
+//     { new: true, runValidators: true },
+//   )
+//     .then((user) => res.send({ data: user }))
+//     .catch(next);
+// };
+//! Было
+const login = async (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
       if (!user) {
         throw new FailPassOrLogin('Не правильный логин или пароль');
       }
-      const id = user._id;
+      const { id } = user;
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
       res.send({ token, id });
     })
@@ -85,6 +99,29 @@ const login = (req, res, next) => {
   // next(err);
   // //res.status(401).send({ message: err.message });
   // });
+
+// const login = async (req, res, next) => {
+//   const { email, password } = req.body;
+//   if (!email || !password || !password.trim()) {
+//     return next(new FailPassOrLogin('Неверные данные'));
+//   }
+//   try {
+//     const user = await User.findOne({ email }).select('+password');
+//     if (!user) {
+//       return next(new FailPassOrLogin('Нет пользователя с таким email'));
+//     }
+//     const matched = await bcrypt.compare(password, user.password);
+//     if (!matched) {
+//       return next(new FailPassOrLogin('Неправильный пароль'));
+//     }
+//     const id = user._id;
+//     const token = jwt.sign({ _id: id }, JWT_SECRET, {
+//       expiresIn: '7d',
+//     });
+//     return res.status(200).send({ token, id });
+//   } catch (err) {
+//     return next(new FailPassOrLogin('Некоректные данные'));
+//   }
 };
 
 module.exports = {
@@ -93,4 +130,5 @@ module.exports = {
   createUser,
   login,
   getUser,
+  // setUserInfo,
 };

@@ -6,31 +6,63 @@ class Api {
 
   getInitialCards() {
     return fetch(`${this.url}/cards`, {
+      method: 'GET',
       headers: {
         authorization: this.headers.authorization,
       },
     }).then((res) => this._getResponseData(res));
   };
 
-  getUserInfo() {
-    return fetch(`${this.url}/users/me`, {
+  postNewCard(card) {
+    const jwt = localStorage.getItem('jwt');
+    return fetch(`${this.url}/cards`, {
+      method: "POST",
       headers: {
-        authorization: this.headers.authorization,
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
       },
-    }).then((res) => this._getResponseData(res));
-  };
-
-  setUserInfo(info) {
-    return fetch(`${this.url}/users/me`, {
-      method: "PATCH",
-      headers: this.headers,
       body: JSON.stringify({
-        name: info.name,
-        about: info.about,
+        name: card.name,
+        link: card.link,
       }),
     })
       .then((res) => this._getResponseData(res));
   };
+
+  deleteCard(cardId) {
+    return fetch(`${this.url}/cards/${cardId}`, {
+      method: 'DELETE',
+      headers: {
+        authorization: this.headers.authorization,
+      },
+    })
+      .then((res) => this._getResponseData(res));
+  };
+
+  getUserInfo() {
+    const jwt = localStorage.getItem('jwt');
+    return fetch(`${this.url}/users/me`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
+        // authorization: this.headers.authorization,
+      },
+    })
+      .then((res) => this._getResponseData(res));
+  };
+
+  // setUserInfo(info) {
+  //   return fetch(`${this.url}/users/me`, {
+  //     method: "PATCH",
+  //     headers: this.headers,
+  //     body: JSON.stringify({
+  //       name: info.name,
+  //       about: info.about,
+  //     }),
+  //   })
+  //   .then((res) => this._getResponseData(res));
+  // };
 
   setNewAvatar(avatar) {
     return fetch(`${this.url}/users/me/avatar`, {
@@ -42,33 +74,14 @@ class Api {
     }).then((res) => this._getResponseData(res));
   };
 
-  postNewCard(card) {
-    return fetch(`${this.url}/cards`, {
-      method: "POST",
-      headers: this.headers,
-      body: JSON.stringify({
-        name: card.name,
-        link: card.link,
-      }),
-    }).then((res) => this._getResponseData(res));
-  };
-
-  deleteCard(cardId) {
-    return fetch(`${this.url}/cards/${cardId}`, {
-      method: "DELETE",
-      headers: {
-        authorization: this.headers.authorization,
-      },
-    }).then((res) => this._getResponseData(res));
-  };
-
   changeLikeCardStatus(cardId, isLiked) {
     return fetch(`${this.url}/cards/likes/${cardId}`, {
       method: (isLiked ? "PUT" : "DELETE"),
       headers: {
         authorization: this.headers.authorization,
       },
-    }).then((res) => this._getResponseData(res));
+    })
+      .then((res) => this._getResponseData(res));
   };
 
   _getResponseData(res) {
@@ -95,3 +108,11 @@ export const api = new Api({
     'Content-Type': 'application/json',
   }
 });
+
+// export const api = new Api({
+//   baseUrl: 'http://localhost:3000',
+//   headers: {
+//     authorization: `Bearer ${localStorage.getItem('jwt')}`,
+//     'Content-Type': 'application/json',
+//   }
+// });

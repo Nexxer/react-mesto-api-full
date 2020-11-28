@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import { api } from '../utils/api';
 import { getJWT, onLogin, registration } from "./../utils/apiLogin";
-import CurrentUserContext from './../contexts/CurrentUserContext';
+import { CurrentUserContext } from './../contexts/CurrentUserContext';
 import { ROUTES_MAP } from '../utils/routesMap';
 import Header from './Header'
 import Main from './Main'
@@ -32,14 +32,16 @@ function App() {
 
   const history = useHistory();
 
-  const checkToken = () => {
+
+  useEffect(() => {
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
       getJWT(jwt)
         .then((res) => {
           if (res) {
+            setCurrentUser(res);
             setLoggedIn(true);
-            setUserMail(res.data.email);
+            setUserMail(res.email);
             history.push("/");
           } else {
             setLoggedIn(false);
@@ -49,54 +51,94 @@ function App() {
         .catch((error) => {
           console.error(error);
         });
+    };
+  }, [loggedIn, history]);
+
+  useEffect(() => {
+    if (loggedIn) {
+      api
+        .getUserInfo()
+        .then((userInfo) => {
+          setCurrentUser(userInfo);
+        })
+        .catch((err) => {
+          console.log(`Данные о пользователе не получены. ${err}`);
+        });
     }
-  };
+  }, [loggedIn]);
 
-  function handleLogout() {
-    setLoggedIn(false);
-  }
+  useEffect(() => {
+    if (loggedIn) {
+      api
+        .getInitialCards()
+        .then((card) => {
+          setCards(card);
+        })
+        .catch((err) => {
+          console.log(`Данные карточек не получены. ${err}`);
+        });
+    }
+  }, [loggedIn]);
 
-  function handleCardLike(card) {
-    const isLiked = card.likes.some(i => i._id === currentUser._id);
-    api
-      .changeLikeCardStatus(card._id, !isLiked)
-      .then((newCard) => {
-        const newCards = cards.map((c) => c._id === card._id ? newCard : c);
-        setCards(newCards);
-      })
-      .catch((err) => {
-        console.log(`Ошибка лайка. ${err}`);
-      });
-  }
+  // function handleCardLike(card) {
+  //   const isLiked = card.likes.some(i => i._id === currentUser._id);
+  //   api
+  //     .changeLikeCardStatus(card._id, !isLiked)
+  //     .then((newCard) => {
+  //       const newCards = cards.map((res) => res._id === card._id ? newCard : res);
+  //       setCards(newCards);
+  //     })
+  //     .catch((err) => {
+  //       console.log(`Ошибка лайка. ${err}`);
+  //     });
+  // }
 
   function handleCardDelete(card) {
     api
       .deleteCard(card._id)
-      .then(() => {
+      .then((d) => {
         const newCards = cards.filter((c) => c._id !== card._id);
         setCards(newCards);
       })
       .catch((err) => {
         console.log(`Ошибка удаления карточки. ${err}`);
       });
-  }
+  };
 
-  function handleEditAvatarClick() {
-    setIsEditAvatarPopupOpen(true);
-  }
+  // function handleEditAvatarClick() {
+  //   setIsEditAvatarPopupOpen(true);
+  // }
 
-  function handleEditProfileClick() {
-    setIsEditProfilePopupOpen(true);
-  }
+  // function handleEditProfileClick() {
+  //   setIsEditProfilePopupOpen(true);
+  // }
 
   function handleAddPlaceClick() {
     setIsAddPlacePopupOpen(true);
-  }
+    setEventListeners();
+  };
 
   function handleCardClick(card) {
     setIsCardPopupOpen(true);
     setSelectedCard(card);
-  }
+    setEventListeners();
+  };
+
+  function closeEsc(evt) {
+    if ((evt.key === 'Escape') && (isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || isCardPopupOpen)) {
+      closeAllPopups();
+    }
+  };
+
+  const overlayClose = (e) => {
+    if (e.target.classList.contains('popup')) {
+      closeAllPopups();
+    }
+  };
+  const setEventListeners = () => {
+    document.addEventListener('keydown', closeEsc);
+    document.addEventListener('click', overlayClose);
+  };
 
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
@@ -104,31 +146,33 @@ function App() {
     setIsAddPlacePopupOpen(false);
     setIsRegisterPopupOpen(false);
     setIsCardPopupOpen(false);
-  }
+    document.removeEventListener('keydown', closeEsc);
+    document.removeEventListener('click', overlayClose);
+  };
 
-  function handleUpdateUser(info) {
-    api
-      .setUserInfo(info)
-      .then((res) => {
-        setCurrentUser(res);
-        closeAllPopups();
-      })
-      .catch((err) => {
-        console.log(`Ошибка обновления данных пользователя. ${err}`);
-      })
-  }
+  // function handleUpdateUser(info) {
+  //   api
+  //     .setUserInfo(info)
+  //     .then((res) => {
+  //       setCurrentUser(res);
+  //       closeAllPopups();
+  //     })
+  //     .catch((err) => {
+  //       console.log(`Ошибка обновления данных пользователя. ${err}`);
+  //     })
+  // }
 
-  function handleUpdateAvatar(avatar) {
-    api
-      .setNewAvatar(avatar)
-      .then((res) => {
-        setCurrentUser(res);
-        closeAllPopups();
-      })
-      .catch((err) => {
-        console.log(`Ошибка обновления аватара. ${err}`);
-      })
-  }
+  // function handleUpdateAvatar(avatar) {
+  //   api
+  //     .setNewAvatar(avatar)
+  //     .then((res) => {
+  //       setCurrentUser(res);
+  //       closeAllPopups();
+  //     })
+  //     .catch((err) => {
+  //       console.log(`Ошибка обновления аватара. ${err}`);
+  //     })
+  // }
 
   function handleAddPlaceSubmit(card) {
     api
@@ -141,29 +185,6 @@ function App() {
       .catch((err) => {
         console.log(`Ошибка добавления карточки. ${err}`);
       })
-  }
-
-  function handleLogin(email, password) {
-    onLogin(email, password)
-      .then((res) => {
-        if (res.token) {
-          setLoggedIn(true);
-          setUserMail(email);
-          localStorage.setItem("jwt", res.token);
-          history.push("/");
-        } else if (res.message) {
-          console.error(res.message)
-        }
-      })
-      .catch((err) => {
-        if (err === 400) {
-          console.log("Не передано одно из полей");
-        } else if (err === 401) {
-          console.log("Пользователь не зарегестрирован");
-        } else {
-          console.log(`Ошибка: ${err}`);
-        }
-      });
   };
 
   function handleRegister(email, password) {
@@ -187,29 +208,45 @@ function App() {
       });
   };
 
-  function closeEsc(evt) {
-    if ((evt.key === 'Escape') && (isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || isCardPopupOpen)) {
-      closeAllPopups();
-    }
-  }
-
-  document.addEventListener('keydown', closeEsc);
-
-  useEffect(() => {
-    checkToken();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [history]);
-
-  useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
-      .then(([values, card]) => {
-        setCurrentUser(values);
-        setCards(card);
+  function handleLogin(email, password) {
+    onLogin(email, password)
+      .then((res) => {
+        if (res.token) {
+          setUserMail(email);
+          localStorage.setItem("jwt", res.token);
+          setLoggedIn(true);
+          history.push("/");
+        } else if (res.message) {
+          console.error(res.message)
+        }
       })
       .catch((err) => {
-        console.log(`Данные не получены. ${err}`);
-      })
-  }, []);
+        if (err === 400) {
+          console.log("Не передано одно из полей");
+        } else if (err === 401) {
+          console.log("Пользователь не зарегестрирован");
+        } else {
+          console.log(`Ошибка: ${err}`);
+        }
+      });
+  };
+
+  function handleLogout() {
+    setLoggedIn(false);
+    localStorage.removeItem('jwt');
+  };
+
+  // useEffect(() => {
+  //   Promise.all([api.getUserInfo(), api.getInitialCards()])
+  //     .then(([values, card]) => {
+  //       setCurrentUser(values);
+  //       setCards(card);
+  //     })
+  //     .catch((err) => {
+  //       console.log(`Данные не получены. ${err}`);
+  //     })
+  // }, []);
+
 
 
   return (
@@ -226,12 +263,12 @@ function App() {
           <ProtectedRoute path={ROUTES_MAP.MAIN} exact
             component={Main}
             loggedIn={loggedIn}
-            onEditAvatar={handleEditAvatarClick}
-            onEditProfile={handleEditProfileClick}
+            // onEditAvatar={handleEditAvatarClick}
+            // onEditProfile={handleEditProfileClick}
             onAddPlace={handleAddPlaceClick}
             onCardClick={handleCardClick}
             cards={cards}
-            onCardLike={handleCardLike}
+            // onCardLike={handleCardLike}
             onCardDelete={handleCardDelete}
           />
 
@@ -257,14 +294,14 @@ function App() {
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
-          onUpdateAvatar={handleUpdateAvatar}
+          // onUpdateAvatar={handleUpdateAvatar}
           buttonText='Сохранить'
         />
 
         <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
-          onUpdateUser={handleUpdateUser}
+          // onUpdateUser={handleUpdateUser}
           buttonText='Сохранить'
         />
 

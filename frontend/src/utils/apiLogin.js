@@ -1,4 +1,5 @@
 const baseUrl = 'https://www.api.nekker.students.nomoreparties.xyz';
+// const baseUrl = 'http://localhost:3000';
 
 export const registration = (email, password) => {
   return fetch(`${baseUrl}/signup`, {
@@ -8,12 +9,13 @@ export const registration = (email, password) => {
     },
     body: JSON.stringify({ email, password }),
   })
-    .then((res) => {
-      // if (res.ok) {
-      return res.json();
-      // }
-      // return Promise.reject(res.status)
-    })
+  // .then((res) => {
+  //   if (res.ok) {
+  //     return res.json();
+  //   }
+  //   // return Promise.reject(res.status)
+  //   return
+  // })
 };
 
 export const onLogin = (email, password) => {
