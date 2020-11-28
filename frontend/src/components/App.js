@@ -68,9 +68,10 @@ function App() {
   }, [loggedIn]);
 
   useEffect(() => {
+    const jwt = localStorage.getItem('jwt');
     if (loggedIn) {
       api
-        .getInitialCards()
+        .getInitialCards(jwt)
         .then((card) => {
           setCards(card);
         })
@@ -96,7 +97,7 @@ function App() {
   function handleCardDelete(card) {
     api
       .deleteCard(card._id)
-      .then((d) => {
+      .then(() => {
         const newCards = cards.filter((c) => c._id !== card._id);
         setCards(newCards);
       })
@@ -192,7 +193,7 @@ function App() {
       .then((res) => {
         setIsRegisterPopupOpen(true);
         if (res.data.email === email) {
-          setStatusReg(true)
+              setStatusReg(true)
           history.push("/signin");
         } else {
           setStatusReg(false)

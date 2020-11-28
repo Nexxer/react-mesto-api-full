@@ -58,7 +58,7 @@ const createUser = (req, res, next) => {
         throw new NotFoundError('Пользователь не найден');
       }
       // res.status(200).send({ data: { id: user._id, email: user.email } });
-      res.send({ data: { id: user._id, email: user.email } });
+      res.send({ data: { id: user.id, email: user.email } });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {

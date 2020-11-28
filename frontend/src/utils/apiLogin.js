@@ -9,13 +9,13 @@ export const registration = (email, password) => {
     },
     body: JSON.stringify({ email, password }),
   })
-  // .then((res) => {
-  //   if (res.ok) {
-  //     return res.json();
-  //   }
-  //   // return Promise.reject(res.status)
-  //   return
-  // })
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      // return Promise.reject(res.status)
+      return
+    })
 };
 
 export const onLogin = (email, password) => {
@@ -27,7 +27,7 @@ export const onLogin = (email, password) => {
     body: JSON.stringify({ email, password }),
   })
     .then((res) => {
-      if (res.ok) {
+      if (res) {
         return res.json();
       }
       return Promise.reject(res.status)

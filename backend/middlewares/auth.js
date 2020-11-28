@@ -42,6 +42,6 @@ module.exports = async (req, res, next) => {
   } catch (err) {
     return handleAuthError(res);
   }
-  req.user = payload; // записываем пейлоуд в объект запроса
-  return next(); // пропускаем запрос дальше
+  req.user = payload;
+  return next();
 };

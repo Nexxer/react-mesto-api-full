@@ -4,11 +4,13 @@ class Api {
     this.headers = headers;
   };
 
-  getInitialCards() {
+  getInitialCards(jwt) {
     return fetch(`${this.url}/cards`, {
       method: 'GET',
       headers: {
-        authorization: this.headers.authorization,
+        // authorization: this.headers.authorization,
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
       },
     }).then((res) => this._getResponseData(res));
   };
@@ -64,15 +66,15 @@ class Api {
   //   .then((res) => this._getResponseData(res));
   // };
 
-  setNewAvatar(avatar) {
-    return fetch(`${this.url}/users/me/avatar`, {
-      method: "PATCH",
-      headers: this.headers,
-      body: JSON.stringify({
-        avatar: avatar,
-      }),
-    }).then((res) => this._getResponseData(res));
-  };
+  // setNewAvatar(avatar) {
+  //   return fetch(`${this.url}/users/me/avatar`, {
+  //     method: "PATCH",
+  //     headers: this.headers,
+  //     body: JSON.stringify({
+  //       avatar: avatar,
+  //     }),
+  //   }).then((res) => this._getResponseData(res));
+  // };
 
   changeLikeCardStatus(cardId, isLiked) {
     return fetch(`${this.url}/cards/likes/${cardId}`, {
