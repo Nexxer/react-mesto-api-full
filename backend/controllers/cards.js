@@ -34,6 +34,7 @@ const createCard = async (req, res, next) => {
 const deleteCard = async (req, res, next) => {
   await Card.findByIdAndDelete(req.params.cardId)
     .then((card) => {
+      console.log(card.owner.toString());
       if (!card) {
         throw new NotFoundError('Такой карточки нет');
       } else if (card.owner.toString() !== req.user._id) {

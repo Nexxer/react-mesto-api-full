@@ -31,11 +31,13 @@ class Api {
       .then((res) => this._getResponseData(res));
   };
 
-  deleteCard(cardId) {
+  deleteCard(cardId, jwt) {
     return fetch(`${this.url}/cards/${cardId}`, {
       method: 'DELETE',
       headers: {
-        authorization: this.headers.authorization,
+        // authorization: this.headers.authorization,
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
       },
     })
       .then((res) => this._getResponseData(res));
@@ -101,7 +103,6 @@ class Api {
 //     'Content-Type': 'application/json'
 //   }
 // });
-
 
 export const api = new Api({
   baseUrl: 'http://www.api.nekker.students.nomoreparties.xyz',
