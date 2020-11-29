@@ -58,9 +58,12 @@ const createUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         throw new NotValidInfo('Переданы некорректные данные');
+      } else if (err.keyPattern.email === 1) {
+        throw new FailPassOrLogin('Переданы некорректные данные');
       }
       next(err);
-    });
+    })
+    .catch(next);
 };
 
 // const setUserInfo = (req, res, next) => {

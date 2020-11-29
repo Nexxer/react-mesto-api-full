@@ -3,3 +3,6 @@
 
 Ссылка на сайт
 http://www.nekker.students.nomoreparties.xyz
+
+Ссылка на API
+http://www.api.nekker.students.nomoreparties.xyz
