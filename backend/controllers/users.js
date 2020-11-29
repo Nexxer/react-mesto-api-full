@@ -13,7 +13,6 @@ const getUser = async (req, res, next) => {
       if (!user) {
         throw new NotFoundError('Пользователь не найден');
       }
-      // res.status(200).send(user);
       res.send(user);
     })
     .catch(next);
@@ -28,21 +27,18 @@ const getUsers = async (req, res, next) => {
       throw new NotFoundError('Пользователь не найден');
     })
     .catch(next);
-  // .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
 };
 
 const getUserId = (req, res, next) => {
   User.findById(req.params.id)
     .then((id) => {
       if (id) {
-        // res.status(200).send(id);
         res.send(id);
         return;
       }
       throw new NotFoundError('Пользователь не найден');
     })
     .catch(next);
-  // .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
 };
 
 const createUser = (req, res, next) => {
@@ -57,7 +53,6 @@ const createUser = (req, res, next) => {
       if (!user) {
         throw new NotFoundError('Пользователь не найден');
       }
-      // res.status(200).send({ data: { id: user._id, email: user.email } });
       res.send({ data: { id: user.id, email: user.email } });
     })
     .catch((err) => {
@@ -65,10 +60,6 @@ const createUser = (req, res, next) => {
         throw new NotValidInfo('Переданы некорректные данные');
       }
       next(err);
-      // if (err.name === 'ValidationError') {
-      //   res.status(400).send({ message: 'Переданы некорректные данные' });
-      // }
-      // res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -95,10 +86,6 @@ const login = async (req, res, next) => {
       res.send({ token, id });
     })
     .catch(next);
-  // .catch((err) => {
-  // next(err);
-  // //res.status(401).send({ message: err.message });
-  // });
 };
 
 module.exports = {

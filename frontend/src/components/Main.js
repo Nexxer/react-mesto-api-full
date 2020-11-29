@@ -32,8 +32,8 @@ function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick, cards, onC
                 card={card}
                 onCardClick={onCardClick}
                 key={card._id}
-              // onCardLike={onCardLike}
-              onCardDelete={onCardDelete}
+                // onCardLike={onCardLike}
+                onCardDelete={onCardDelete}
               />
             )
           })}

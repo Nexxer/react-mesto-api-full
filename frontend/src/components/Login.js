@@ -18,8 +18,6 @@ function Login(props) {
       console.error("Введите данные");
     }
     props.onLogin(email, password);
-    // setEmail("");
-    // setPassword("");
   }
 
   return (

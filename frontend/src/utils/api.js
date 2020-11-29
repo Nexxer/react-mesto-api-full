@@ -8,7 +8,6 @@ class Api {
     return fetch(`${this.url}/cards`, {
       method: 'GET',
       headers: {
-        // authorization: this.headers.authorization,
         'Content-Type': 'application/json',
         Authorization: `Bearer ${jwt}`,
       },
@@ -35,7 +34,6 @@ class Api {
     return fetch(`${this.url}/cards/${cardId}`, {
       method: 'DELETE',
       headers: {
-        // authorization: this.headers.authorization,
         'Content-Type': 'application/json',
         Authorization: `Bearer ${jwt}`,
       },
@@ -50,7 +48,6 @@ class Api {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${jwt}`,
-        // authorization: this.headers.authorization,
       },
     })
       .then((res) => this._getResponseData(res));

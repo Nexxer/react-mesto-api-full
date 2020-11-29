@@ -20,6 +20,7 @@ usersRouter.post('/signup', celebrate({
         .email(),
       password: Joi
         .string()
+        .trim()
         .required()
         .min(1),
     }),
@@ -39,8 +40,6 @@ usersRouter.post('/signin', celebrate({
         .min(1),
     }),
 }), login);
-
-// usersRouter.post('/users', createUser);
 
 usersRouter.use(auth);
 
