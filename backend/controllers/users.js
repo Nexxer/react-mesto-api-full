@@ -4,6 +4,7 @@ const User = require('../models/user');
 const NotFoundError = require('../middlewares/errors/notFoundError');
 const NotValidInfo = require('../middlewares/errors/notValidInfo');
 const FailPassOrLogin = require('../middlewares/errors/failPassOrLogin');
+const RepitRegEmal = require('../middlewares/errors/repitRegEmal');
 
 const { JWT_SECRET = 'secret' } = process.env;
 
@@ -59,7 +60,7 @@ const createUser = (req, res, next) => {
       if (err.name === 'ValidationError') {
         throw new NotValidInfo('Переданы некорректные данные');
       } else if (err.keyPattern.email === 1) {
-        throw new FailPassOrLogin('Переданы некорректные данные');
+        throw new RepitRegEmal('Данного пользователя нельзя зарегестрировать! Используйте другой email');
       }
       next(err);
     })
