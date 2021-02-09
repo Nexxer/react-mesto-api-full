@@ -13,7 +13,7 @@ export const registration = (email, password) => {
       if (res.ok) {
         return res.json();
       }
-      return
+      return Promise.reject(res.status)
     })
 };
 
